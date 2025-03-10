@@ -38,15 +38,21 @@ pipeline{
         }
 post {
     success {
-        emailtext body: 'Build Successful',
+        script{
+        emailtext frpm: 'Build Successful',
         subject: 'Jenkins Build Successfull',
-        to: 'akpatel851900@gmail.com'
+        to: 'akpatel851900@gmail.com',
+        body: 'Build Failure'
+            }
         
     }
     failure {
-        emailtext body: 'Build Failed',
+        script{
+        emailtext from: 'Build Failed',
         subject: 'Jenkins Build Failed',
-        to: 'akpatel851900@gmail.com'
+        to: 'akpatel851900@gmail.com',
+        body: 'Build Failure'
+            }
     }
 }    
 
