@@ -1,15 +1,10 @@
-@Library("Shared") _
-
 pipeline {
     agent { label "dev" }
 
     stages {
         stage("Code Clone") {
             steps {
-                script {
-                    // Make sure your Shared library has a clone function
-                    clone("https://github.com/RiyaYadav007/two-tier-flask-app.git", "master")
-                }
+                git url: 'https://github.com/RiyaYadav007/two-tier-flask-app.git', branch: 'master'
             }
         }
         
@@ -27,9 +22,12 @@ pipeline {
         
         stage("Push to Docker Hub") {
             steps {
-                script {
-                    // Make sure your Shared library has a docker_push function
-                    docker_push("dockerhubcreds", "two-tier-flask-app")
+                withCredentials([string(credentialsId: 'dockerhubcreds', variable: 'DOCKER_PASSWORD')]) {
+                    sh """
+                        echo "$DOCKER_PASSWORD" | docker login -u your-dockerhub-username --password-stdin
+                        docker tag two-tier-flask-app your-dockerhub-username/two-tier-flask-app
+                        docker push your-dockerhub-username/two-tier-flask-app
+                    """
                 }
             }
         }
