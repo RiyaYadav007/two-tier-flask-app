@@ -1,61 +1,67 @@
 @Library("Shared") _
-pipeline{
-    
-    agent { label "dev"};
-    
-    stages{
-        stage("Code Clone"){
-            steps{
-               script{
-                   clone("https://github.com/RiyaYadav007/two-tier-flask-app.git", "master")
-               }
+
+pipeline {
+    agent { label "dev" }
+
+    stages {
+        stage("Code Clone") {
+            steps {
+                script {
+                    // Make sure your Shared library has a clone function
+                    clone("https://github.com/RiyaYadav007/two-tier-flask-app.git", "master")
+                }
             }
         }
-    } 
-        stage("Build"){
-            steps{
+        
+        stage("Build") {
+            steps {
                 sh "docker build -t two-tier-flask-app ."
             }
-            
         }
-        stage("Test"){
-            steps{
-                echo "Developer / Tester tests likh ke dega..."
-            }
-            
-        }
-        stage("Push to Docker Hub"){
-            steps{
-                script{
-                    docker_push("dockerhubcreds","two-tier-flask-app")
-                }  
+        
+        stage("Test") {
+            steps {
+                echo "Developer / Tester tests will be added here..."
             }
         }
-        stage("Deploy"){
-            steps{
+        
+        stage("Push to Docker Hub") {
+            steps {
+                script {
+                    // Make sure your Shared library has a docker_push function
+                    docker_push("dockerhubcreds", "two-tier-flask-app")
+                }
+            }
+        }
+        
+        stage("Deploy") {
+            steps {
                 sh "docker compose up -d --build flask-app"
             }
         }
-post {
-    success {
-        script{
-        emailext from: 'akpatel851900@gmail.com',
-        to: 'akpatel851900@gmail.com',
-        body: 'Build Success'
-        subject: 'Jenkins Build Successfull'
+    }
+
+    post {
+        success {
+            script {
+                emailext(
+                    from: 'akpatel851900@gmail.com',
+                    to: 'akpatel851900@gmail.com',
+                    subject: 'Jenkins Build Successful',
+                    body: 'Build was successful. Check your application!'
+                )
             }
+        }
         
-    }
-    failure {
-        script{
-        emailext from: 'akpatel851900@gmail.com',
-        to: 'akpatel851900@gmail.com',
-        body: 'Build Failed'
-        subject: 'Jenkins Build Failed'
+        failure {
+            script {
+                emailext(
+                    from: 'akpatel851900@gmail.com',
+                    to: 'akpatel851900@gmail.com',
+                    subject: 'Jenkins Build Failed',
+                    body: 'Build failed. Please check the logs for more details.'
+                )
             }
+        }
     }
-}    
-
-
-    
 }
