@@ -39,19 +39,19 @@ pipeline{
 post {
     success {
         script{
-        emailext from: 'Build Successful',
-        subject: 'Jenkins Build Successfull',
+        emailext from: 'akpatel851900@gmail.com',
         to: 'akpatel851900@gmail.com',
-        body: 'Build Failure'
+        body: 'Build Success'
+        subject: 'Jenkins Build Successfull'
             }
         
     }
     failure {
         script{
-        emailext from: 'Build Failed',
-        subject: 'Jenkins Build Failed',
+        emailext from: 'akpatel851900@gmail.com',
         to: 'akpatel851900@gmail.com',
-        body: 'Build Failure'
+        body: 'Build Failed'
+        subject: 'Jenkins Build Failed'
             }
     }
 }    
